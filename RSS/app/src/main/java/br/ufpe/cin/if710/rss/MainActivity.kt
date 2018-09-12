@@ -6,13 +6,14 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.experimental.async
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.UnknownHostException
+import br.ufpe.cin.if710.rss.ParserRSS.parse
+import java.util.ArrayList
+
 
 class MainActivity : Activity() {
     //ao fazer envio da resolucao, use este link no seu codigo!
@@ -43,8 +44,8 @@ class MainActivity : Activity() {
 
     //Opcional - pesquise outros meios de obter arquivos da internet - bibliotecas, etc.
     @SuppressLint("StaticFieldLeak")
-    internal inner class loadRSS: AsyncTask<String, Void, String>(){
-        override fun doInBackground(vararg feed: String): String {
+    internal inner class loadRSS: AsyncTask<String, Void, List<ItemRSS>>(){
+        override fun doInBackground(vararg feed: String): List<ItemRSS> {
             var in_: InputStream? = null
             var rssFeed = ""
             try {
@@ -60,21 +61,21 @@ class MainActivity : Activity() {
                 }
                 val response = out.toByteArray()
                 rssFeed = String(response, charset("UTF-8"))
+
             } catch (e: IOException) {
                 e.printStackTrace()
-                return "Sem Internet"
             }finally {
                 if(in_ != null) {
                     in_.close()
                 }
             }
-            return rssFeed
+            return parse(rssFeed)
 
         }
 
-        override fun onPostExecute(result: String?) {
+        override fun onPostExecute(result: List<ItemRSS>) {
             super.onPostExecute(result)
-            conteudoRSS.setText(result)
+            conteudoRSS.setText(result.toString())
         }
     }
 }
