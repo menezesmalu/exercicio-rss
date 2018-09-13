@@ -124,9 +124,7 @@ class MainActivity : Activity() {
     internal class CardChangeHolder//poderia tambem passar algum objeto aqui construido no adapter, para nao adicionar atributos
     (row: View) : RecyclerView.ViewHolder(row){
         var title: TextView
-        //var link: TextView
         var pubDate: TextView
-        //var description: TextView
 
         init {
             title = row.findViewById(R.id.item_titulo)
@@ -137,6 +135,12 @@ class MainActivity : Activity() {
         fun bindModel(rss: ItemRSS) {
             title.text = rss.title
             pubDate.text = rss.pubDate
+        }
+
+        override fun onClick(v: View) {
+
+            Toast.makeText(v.context, "Clicou no item da posição: $position", Toast.LENGTH_SHORT).show()
+
         }
 
     }
