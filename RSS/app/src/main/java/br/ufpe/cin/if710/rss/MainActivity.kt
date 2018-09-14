@@ -19,16 +19,10 @@ import java.net.URL
 import br.ufpe.cin.if710.rss.ParserRSS.parse
 
 class MainActivity : Activity() {
-    //ao fazer envio da resolucao, use este link no seu codigo!
     private var RSS_FEED = ""
-    //OUTROS LINKS PARA TESTAR...
-    //http://rss.cnn.com/rss/edition.rss
-    //http://pox.globo.com/rss/g1/brasil/
-    //http://pox.globo.com/rss/g1/ciencia-e-saude/
-    //http://pox.globo.com/rss/g1/tecnologia/
 
-    //use ListView ao invés de TextView - deixe o atributo com o mesmo nome
-    private lateinit var conteudoRSS:RecyclerView
+    //conteudoRSS é um recycler view
+    private lateinit var conteudoRSS: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
@@ -37,6 +31,7 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         conteudoRSS = findViewById(R.id.conteudoRSS)
         viewManager = LinearLayoutManager(this)
+        //iniciando o RSS url com a url no res
         RSS_FEED = getString(R.string.rssfeed)
 
     }
@@ -50,7 +45,6 @@ class MainActivity : Activity() {
         }
     }
 
-    //Opcional - pesquise outros meios de obter arquivos da internet - bibliotecas, etc.
     @SuppressLint("StaticFieldLeak")
     internal inner class loadRSS: AsyncTask<String, Void, List<ItemRSS>>(){
         override fun doInBackground(vararg feed: String): List<ItemRSS> {
@@ -80,27 +74,18 @@ class MainActivity : Activity() {
             return parse(rssFeed)
 
         }
-
+        //atualizanodo a activity após parsear as informações
         override fun onPostExecute(result: List<ItemRSS>) {
             super.onPostExecute(result)
             viewAdapter = RssAdapter(result)
             conteudoRSS = findViewById<RecyclerView>(R.id.conteudoRSS).apply {
-                // use this setting to improve performance if you know that changes
-                // in content do not change the layout size of the RecyclerView
                 setHasFixedSize(true)
-
-                // use a linear layout manager
                 layoutManager = viewManager
-
-                // specify an viewAdapter (see also next example)
                 adapter = viewAdapter
-
             }
         }
     }
-//    class MyViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
-
-
+    //adapter para lidar com o RSS Feed
     private inner class RssAdapter(private val result: List<ItemRSS>) :
             RecyclerView.Adapter<CardChangeHolder>() {
 
@@ -111,6 +96,7 @@ class MainActivity : Activity() {
 
         override fun onBindViewHolder(holder: CardChangeHolder, position: Int) {
             holder.bindModel(result.get(position))
+            //quando clicar no TITULO ir pro site
             holder.title.setOnClickListener {
                 val url = result[position].link
                 val uri = Uri.parse(url)
@@ -123,8 +109,9 @@ class MainActivity : Activity() {
         }
 
     }
-    internal class CardChangeHolder//poderia tambem passar algum objeto aqui construido no adapter, para nao adicionar atributos
-    (row: View) : RecyclerView.ViewHolder(row){
+
+    //CardHolder com as informações que vão aparecer na tela de cada página
+    internal class CardChangeHolder (row: View) : RecyclerView.ViewHolder(row){
         var title: TextView
         var pubDate: TextView
 
