@@ -20,7 +20,7 @@ import br.ufpe.cin.if710.rss.ParserRSS.parse
 
 class MainActivity : Activity() {
     //ao fazer envio da resolucao, use este link no seu codigo!
-    private val RSS_FEED = "http://leopoldomt.com/if1001/g1brasil.xml"
+    private var RSS_FEED = ""
     //OUTROS LINKS PARA TESTAR...
     //http://rss.cnn.com/rss/edition.rss
     //http://pox.globo.com/rss/g1/brasil/
@@ -37,6 +37,7 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         conteudoRSS = findViewById(R.id.conteudoRSS)
         viewManager = LinearLayoutManager(this)
+        RSS_FEED = getString(R.string.rssfeed)
 
     }
 
