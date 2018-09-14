@@ -2,26 +2,21 @@ package br.ufpe.cin.if710.rss
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import br.ufpe.cin.if710.rss.ParserRSS.parse
-import br.ufpe.cin.if710.rss.R.id.item_titulo
-import java.util.ArrayList
-
 
 class MainActivity : Activity() {
     //ao fazer envio da resolucao, use este link no seu codigo!
@@ -102,7 +97,8 @@ class MainActivity : Activity() {
             }
         }
     }
-    class MyViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+//    class MyViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+
 
     private inner class RssAdapter(private val result: List<ItemRSS>) :
             RecyclerView.Adapter<CardChangeHolder>() {
@@ -114,13 +110,18 @@ class MainActivity : Activity() {
 
         override fun onBindViewHolder(holder: CardChangeHolder, position: Int) {
             holder.bindModel(result.get(position))
+            holder.title.setOnClickListener {
+                val url = result[position].link
+                val uri = Uri.parse(url)
+                val intents = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intents)
+            }
         }
-
         override fun getItemCount(): Int {
             return result.size
         }
-    }
 
+    }
     internal class CardChangeHolder//poderia tambem passar algum objeto aqui construido no adapter, para nao adicionar atributos
     (row: View) : RecyclerView.ViewHolder(row){
         var title: TextView
@@ -129,7 +130,6 @@ class MainActivity : Activity() {
         init {
             title = row.findViewById(R.id.item_titulo)
             pubDate = row.findViewById(R.id.item_data)
-
         }
 
         fun bindModel(rss: ItemRSS) {
@@ -137,11 +137,6 @@ class MainActivity : Activity() {
             pubDate.text = rss.pubDate
         }
 
-        override fun onClick(v: View) {
-
-            Toast.makeText(v.context, "Clicou no item da posição: $position", Toast.LENGTH_SHORT).show()
-
-        }
-
     }
+
 }
